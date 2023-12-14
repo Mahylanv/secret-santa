@@ -11,4 +11,7 @@ app.use(express.json());
 const userRoute = require("./routes/userRoute");
 app.use('/users', userRoute);
 
+const groupRoute = require("./routes/groupRoute");
+app.use('/groups', groupRoute);
+
 app.listen(port, host);

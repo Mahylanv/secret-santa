@@ -1,3 +1,4 @@
+const { addUsers } = require('../draw');
 const Group = require('../models/groupModel');
 const User = require('../models/userModel');
 const jwt = require('jsonwebtoken');
@@ -5,25 +6,23 @@ const validator = require('validator');
 
 exports.createGroup = async (req, res) => {
     try {
-        // Créez un nouveau groupe
         const newGroup = new Group({
             name: req.body.name,
             admin: req.user.id
         });
 
-        // Ajoutez l'ID du groupe à l'utilisateur admin
+        // change le role
         const adminUser = await User.findByIdAndUpdate(req.user.id, {
             $addToSet: { groups: newGroup._id },
             role: 'admin',
         }, { new: true });
 
-        // Enregistrez le groupe
         const group = await newGroup.save();
 
         res.status(201).json({ group, adminUser });
     } catch (error) {
-        console.error("Error creating group:", error);
-        res.status(500).json({ message: "Error creating group", error: error.message });
+        console.log(error);
+        res.status(500).json({ message: "EErreur lors de la creation du groupe", error: error.message });
     }
 };
 
@@ -31,7 +30,7 @@ exports.createGroup = async (req, res) => {
 exports.inviteToGroup = async (req, res) => {
     try {
         if (!validator.isEmail(req.body.email)) {
-            return res.status(400).json({ message: 'Adresse email invalide' });
+            return res.status(400).json({ message: 'Adresse email invalide' }); // verification du format mail
         }
         const groupId = req.params.groupId;
         const group = await Group.findById(groupId);
@@ -45,7 +44,7 @@ exports.inviteToGroup = async (req, res) => {
 
         const { email } = req.body;
         if (!email) {
-            return res.status(400).json({ message: "L'adresse email est requise pour envoyer une invitation" });
+            return res.status(400).json({ message: "L'adresse email est requise pour envoyer une invitation" }); // mail obligatoire
         }
 
         // et s'il est déjà membre du groupe ou a déjà reçu une invitation
@@ -80,13 +79,13 @@ exports.acceptInvitation = async (req, res) => {
         const { token } = req.body;
         const decoded = jwt.verify(token, 'secretKey');
 
-        const group = await Group.findById(decoded.groupId);
+        const group = await Group.findById(decoded.groupId); // cherche le groupe 
         if (!group) {
             return res.status(404).json({ message: 'Groupe non trouvé' });
         }
         console.log("Tokens stockés :", group.inviteTokens);
         console.log("Token reçu :", token);
-        if (group.inviteTokens.findIndex(inv => inv.token === token) === -1) {
+        if (group.inviteTokens.findIndex(inv => inv.token === token) === -1) { // verifiy le token d'inivtation
             return res.status(400).json({ message: 'Invitation invalide ou expirée' });
         }
 
@@ -191,3 +190,46 @@ exports.deleteGroupe = async (req, res) => {
     }
 };
 
+exports.shuffle = async (req, res) => {
+    try {
+        const groupId = req.params.groupId;
+        const group = await Group.findById(groupId);
+        if (!group) {
+            return res.status(404).json({ message: 'Groupe non trouvé' });
+        }
+
+        // Verification si le tirage a deja été fait
+        if (group.drawCompleted) {
+            return res.status(400).json({ message: 'Le tirage a deja été fait' });
+        }
+        const users = group.members.map(member => member._id);
+        const add = addUsers(users, users);
+        group.drawCompleted = true;
+        await group.save();
+
+        return res.status(200).json(`{ message: Tirage réussi }`);
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: 'Erreur serveur' });
+    }
+};
+
+
+exports.mydraw = async (req, res) => {
+    try {
+        const userId = req.params._id;
+        const group = await Group.findOne({ members: { $elemMatch: { _id: userId } } }); // verification si un user match
+
+        if (!group) {
+            return res.status(404).json(`{ message: 'Vous n'avez pas de groupe' }`);
+        }
+
+        const groupUsers = group.members.map(member => member._id);
+        const mydraw = addUsers(groupUsers, userId);
+
+        return res.status(200).json(`{ message: Vous  avez tiré ${mydraw[userId]} }`);
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: 'Erreur serveur' });
+    }
+};

@@ -4,8 +4,8 @@ const Schema = mongoose.Schema;
 let userSchema = new Schema({
     email: {
         type: String,
-        required: true,
-        unique: true,
+        required: true, 
+        unique: true, // qu'un seul email possible
     },
     password: {
         type: String,
@@ -13,7 +13,7 @@ let userSchema = new Schema({
     },
     role: {
         type: String,
-        default: 'user',
+        default: 'user', // par defaut il est user
     },
     groups: [{
         type: mongoose.Schema.Types.ObjectId,

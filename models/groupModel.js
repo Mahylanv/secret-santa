@@ -17,7 +17,7 @@ let groupSchema = new Schema({
         },
         joinedAt: {
             type: Date,
-            default: Date.now,
+            default: Date.now, // date d'arruvée
         },
     }],
     inviteTokens: [{
@@ -26,7 +26,7 @@ let groupSchema = new Schema({
         },
         email: {
             type: String,
-            required: true,  // Ajout de cette ligne si l'e-mail doit être obligatoire
+            required: true, 
         },
         user: {
             type: mongoose.Schema.Types.ObjectId,

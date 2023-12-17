@@ -5,17 +5,17 @@ const jwtMiddleware = require('../middleware/jwtMiddleware');
 
 
 router
-    .route("/register")
+    .route("/register") // créer un compte
         .post(userController.userRegister);
 
 
 router
-    .route("/login")
+    .route("/login") // se connecter
         .post(userController.loginRegister);
 
 router
     .route("/:_id")
-        .all(jwtMiddleware.verifyToken) // for verify the token for all this routes
+        .all(jwtMiddleware.verifyToken) //verifier le token sur toutes les routes suivantes
         .patch(userController.updateRegisterPatch)
         .put(userController.updateRegisterPut)
         .delete(userController.deleteRegister);

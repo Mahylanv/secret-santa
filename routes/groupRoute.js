@@ -8,21 +8,27 @@ router
     .route("/create")
         .post(jwtMiddleware.verifyToken,groupController.createGroup);
 
-// router.post('/create', jwtMiddleware, groupController.createGroup);
 
-// // Inviter un utilisateur à rejoindre un groupe
+// Inviter un user dans un groupe
 router.post("/invite/:groupId",jwtMiddleware.verifyToken,groupController.inviteToGroup);
-// router
-//     .route("/invite/:groupeId")
-//         .post(jwtMiddleware.verifyToken,groupController.inviteToGroup);
-// router.post('/invite/:groupId', jwtMiddleware, groupController.inviteToGroup);
 
-// Accepter une invitation à rejoindre un groupe
+// Accepter une invitation 
 router.post('/accept', jwtMiddleware.verifyToken, groupController.acceptInvitation);
 
-router.post('/refuse', jwtMiddleware.verifyToken, groupController.refuseInvitation);// Dans votre fichier de routes (par exemple groupRoutes.js)
+//Refuser une invitation
+router.post('/refuse', jwtMiddleware.verifyToken, groupController.refuseInvitation);
+
+// changer le nom du groupe
 router.put('/update/:groupId',  jwtMiddleware.verifyToken, groupController.updateGroup);
+
+// supprimer le grouper
 router.delete('/delete/:groupId',  jwtMiddleware.verifyToken, groupController.deleteGroup);
+
+//faire un tirage au sort 
+router.get("/:groupId/draw", jwtMiddleware.verifyToken, groupController.shuffle);
+
+// voir son tirage
+router.get("/:groupId/my-draw/:_id", jwtMiddleware.verifyToken, groupController.mydraw);
 
 
 module.exports = router;

@@ -7,6 +7,7 @@ const JWT_KEY='azertyuiop';
 const validator = require('validator');
 
 
+
 // security paswword
 exports.hashPassword = async (password) => {
     try {
@@ -16,6 +17,7 @@ exports.hashPassword = async (password) => {
         throw error;
     }
 };
+
 
 // user register
 exports.userRegister = async (req, res) => {
@@ -66,6 +68,9 @@ exports.loginRegister = async (req, res) => {
 // user update account
 exports.updateRegisterPatch = async (req, res) => {
     try {
+        if (!validator.isEmail(req.body.email)) {
+            return res.status(400).json({ message: 'Adresse email invalide' });
+        }
         if (req.body.password) {
             req.body.password = await bcrypt.hash(req.body.password, saltRounds);
         }
@@ -84,6 +89,9 @@ exports.updateRegisterPatch = async (req, res) => {
 
 exports.updateRegisterPut = async (req, res) => {
     try {
+        if (!validator.isEmail(req.body.email)) {
+            return res.status(400).json({ message: 'Adresse email invalide' });
+        }
         if (req.body.password) {
             req.body.password = await bcrypt.hash(req.body.password, saltRounds);
         }

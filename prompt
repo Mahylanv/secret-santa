@@ -1,0 +1,81 @@
+/*const validator = require('validator');
+
+if (!validator.isEmail(req.body.email)) {
+    return res.status(400).json({ message: 'Adresse email invalide' });
+}, /var/www/html/cours-mds/api/tp-secret-santa/secret-santa/controllers/userController.js:9
+if (!validator.isEmail(req.body.email)) {
+                       ^
+
+ReferenceError: req is not defined
+    at Object.<anonymous> (/var/www/html/cours-mds/api/tp-secret-santa/secret-santa/controllers/userController.js:9:24)
+    at Module._compile (node:internal/modules/cjs/loader:1103:14)
+    at Object.Module._extensions..js (node:internal/modules/cjs/loader:1155:10)
+    at Module.load (node:internal/modules/cjs/loader:981:32)
+    at Function.Module._load (node:internal/modules/cjs/loader:822:12)
+    at Module.require (node:internal/modules/cjs/loader:1005:19)
+    at require (node:internal/modules/cjs/helpers:102:18)
+    at Object.<anonymous> (/var/www/html/cours-mds/api/tp-secret-santa/secret-santa/routes/userRoute.js:3:24)
+    at Module._compile (node:internal/modules/cjs/loader:1103:14)
+    at Object.Module._extensions..js (node:internal/modules/cjs/loader:1155:10)
+[nodemon] app crashed - waiting for file changes before starting...*/
+
+//ca m'a pas aidé
+
+/* User
+j'ai cette erreur lors de l'invitation a un groupe : CastError: Cast to ObjectId failed for value "{ groupId: '657b1d6348092ecabed9d8db' }" (type Object) at path "_id" for model "Group"
+    at SchemaObjectId.cast (/var/www/html/cours-mds/api/tp-secret-santa/secret-santa/node_modules/mongoose/lib/schema/objectId.js:250:11)
+    at SchemaObjectId.SchemaType.applySetters (/var/www/html/cours-mds/api/tp-secret-santa/secret-santa/node_modules/mongoose/lib/schemaType.js:1219:12)
+    at SchemaObjectId.SchemaType.castForQuery (/var/www/html/cours-mds/api/tp-secret-santa/secret-santa/node_modules/mongoose/lib/schemaType.js:1633:15)
+    at cast (/var/www/html/cours-mds/api/tp-secret-santa/secret-santa/node_modules/mongoose/lib/cast.js:304:34)
+    at model.Query.Query.cast (/var/www/html/cours-mds/api/tp-secret-santa/secret-santa/node_modules/mongoose/lib/query.js:4768:12)
+    at model.Query.Query._castConditions (/var/www/html/cours-mds/api/tp-secret-santa/secret-santa/node_modules/mongoose/lib/query.js:2200:10)
+    at model.Query._findOne (/var/www/html/cours-mds/api/tp-secret-santa/secret-santa/node_modules/mongoose/lib/query.js:2484:8)
+    at model.Query.exec (/var/www/html/cours-mds/api/tp-secret-santa/secret-santa/node_modules/mongoose/lib/query.js:4290:80)
+    at processTicksAndRejections (node:internal/process/task_queues:96:5)
+    at async exports.inviteToGroup (/var/www/html/cours-mds/api/tp-secret-santa/secret-santa/controllers/groupController.js:23:23) {
+  stringValue: `"{ groupId: '657b1d6348092ecabed9d8db' }"`,
+  messageFormat: undefined,
+  kind: 'ObjectId',
+  value: { groupId: '657b1d6348092ecabed9d8db' },
+  path: '_id',
+  reason: BSONError: input must be a 24 character hex string, 12 byte Uint8Array, or an integer
+      at new ObjectId (/var/www/html/cours-mds/api/tp-secret-santa/secret-santa/node_modules/bson/lib/bson.cjs:2047:23)
+      at castObjectId (/var/www/html/cours-mds/api/tp-secret-santa/secret-santa/node_modules/mongoose/lib/cast/objectid.js:25:12)
+      at SchemaObjectId.cast (/var/www/html/cours-mds/api/tp-secret-santa/secret-santa/node_modules/mongoose/lib/schema/objectId.js:248:12)
+      at SchemaObjectId.SchemaType.applySetters (/var/www/html/cours-mds/api/tp-secret-santa/secret-santa/node_modules/mongoose/lib/schemaType.js:1219:12)
+      at SchemaObjectId.SchemaType.castForQuery (/var/www/html/cours-mds/api/tp-secret-santa/secret-santa/node_modules/mongoose/lib/schemaType.js:1633:15)
+      at cast (/var/www/html/cours-mds/api/tp-secret-santa/secret-santa/node_modules/mongoose/lib/cast.js:304:34)
+      at model.Query.Query.cast (/var/www/html/cours-mds/api/tp-secret-santa/secret-santa/node_modules/mongoose/lib/query.js:4768:12)
+      at model.Query.Query._castConditions (/var/www/html/cours-mds/api/tp-secret-santa/secret-santa/node_modules/mongoose/lib/query.js:2200:10)
+      at model.Query._findOne (/var/www/html/cours-mds/api/tp-secret-santa/secret-santa/node_modules/mongoose/lib/query.js:2484:8)
+      at model.Query.exec (/var/www/html/cours-mds/api/tp-secret-santa/secret-santa/node_modules/mongoose/lib/query.js:4290:80),
+  valueType: 'Object',
+  model: Model { Group }
+} voici le controller : 
+exports.inviteToGroup = async (req, res) => {
+    // console.log(req.params)
+    try {
+        const group = await Group.findById(req.params);
+        if (!group) {
+            return res.status(404).json({ message: 'Groupe non trouvé' });
+        }
+
+        if (group.admin.toString() !== req.user.id) {
+            return res.status(403).json({ message: 'Non autorisé' });
+        }
+
+        const token = jwt.sign({ groupId: group._id }, 'secretKey', { expiresIn: '1h' });
+        group.inviteTokens.push({ token, expiresAt: new Date(Date.now() + 3600000) });
+        await group.save();
+
+        // Envoyer le token par email ici
+        res.status(200).json({ message: 'Invitation envoyée', token });
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({ message: "Erreur serveur" });
+    }
+}; et mon url : http://localhost:3000/groups/invite/657b1d6348092ecabed9d8db */
+
+/* Reponse : L'erreur que vous rencontrez est liée à la façon dont vous tentez de récupérer le groupe dans votre méthode inviteToGroup. L'erreur CastError: Cast to ObjectId failed for value "{ groupId: '657b1d6348092ecabed9d8db' }" indique que Mongoose essaie de convertir un objet entier en un ObjectId, ce qui n'est pas possible.
+
+Dans votre méthode inviteToGroup, lorsque vous utilisez Group.findById(req.params), req.params est un objet qui contient tous les paramètres de route, pas seulement l'ID du groupe. Vous devez spécifiquement extraire l'ID du groupe de req.params.*/

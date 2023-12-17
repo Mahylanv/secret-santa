@@ -20,5 +20,9 @@ router.post("/invite/:groupId",jwtMiddleware.verifyToken,groupController.inviteT
 // Accepter une invitation à rejoindre un groupe
 router.post('/accept', jwtMiddleware.verifyToken, groupController.acceptInvitation);
 
-router.post('/refuse', jwtMiddleware.verifyToken, groupController.refuseInvitation);
+router.post('/refuse', jwtMiddleware.verifyToken, groupController.refuseInvitation);// Dans votre fichier de routes (par exemple groupRoutes.js)
+router.put('/update/:groupId',  jwtMiddleware.verifyToken, groupController.updateGroup);
+router.delete('/delete/:groupId',  jwtMiddleware.verifyToken, groupController.deleteGroup);
+
+
 module.exports = router;

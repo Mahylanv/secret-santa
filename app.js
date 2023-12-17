@@ -4,7 +4,7 @@ const port = 3000;
 const host = '0.0.0.0'
 const mongoose = require("mongoose");
 
-mongoose.connect('mongodb://127.0.0.1:27017/apitp');
+mongoose.connect('mongodb://127.0.0.1:27017/apitp'); // connexion a mongoDB
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 

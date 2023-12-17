@@ -1,3 +1,4 @@
+const { addUsers } = require('../draw');
 const Group = require('../models/groupModel');
 const User = require('../models/userModel');
 const jwt = require('jsonwebtoken');
@@ -191,3 +192,46 @@ exports.deleteGroupe = async (req, res) => {
     }
 };
 
+exports.shuffle = async (req, res) => {
+    try {
+        const groupId = req.params.groupId;
+        const group = await Group.findById(groupId);
+        if (!group) {
+            return res.status(404).json({ message: 'Groupe non trouvé' });
+        }
+
+        // Verification si le tirage a deja été fait
+        if (group.drawCompleted) {
+            return res.status(400).json({ message: 'Le tirage a deja été fait' });
+        }
+        const users = group.members.map(member => member._id);
+        const add = addUsers(users, users);
+        group.drawCompleted = true;
+        await group.save();
+
+        return res.status(200).json(`{ message: Tirage réussi }`);
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: 'Erreur serveur' });
+    }
+};
+
+
+exports.mydraw = async (req, res) => {
+    try {
+        const userId = req.params._id;
+        const group = await Group.findOne({ members: { $elemMatch: { _id: userId } } });
+
+        if (!group) {
+            return res.status(404).json(`{ message: 'Vous n'avez pas de groupe' }`);
+        }
+
+        const groupUsers = group.members.map(member => member._id);
+        const mydraw = addUsers(groupsUsers, userId);
+
+        return res.status(200).json(`{ message: Vous devez un cadeau à : ${mydraw[userId]} }`);
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: 'Erreur serveur' });
+    }
+};

@@ -1,10 +1,10 @@
 const User = require('../models/userModel');
-const jwt = require('jsonwebtoken');
-const bcrypt = require('bcrypt'); 
+const jwt = require('jsonwebtoken'); // composant pour les tokens
+const bcrypt = require('bcrypt'); // composant pour hasher le mdp
 const saltRounds = 10;
 require('dotenv').config();
 const JWT_KEY='azertyuiop';
-const validator = require('validator');
+const validator = require('validator'); // composant pour valider l'email
 
 
 
@@ -22,12 +22,12 @@ exports.hashPassword = async (password) => {
 // user register
 exports.userRegister = async (req, res) => {
     try {
-        if (!validator.isEmail(req.body.email)) {
-            return res.status(400).json({ message: 'Adresse e-mail invalide' });
+        if (!validator.isEmail(req.body.email)) { // verification du format mail
+            return res.status(400).json({ message: 'Adresse email invalide' });
         }
 
         let newUser = new User(req.body);
-        newUser.password = await this.hashPassword(newUser.password);
+        newUser.password = await this.hashPassword(newUser.password); // hashage du pw
         const user = await newUser.save();
         res.status(201).json(`{ message: User créé : ${user.email} }`);
     } catch (error) {
@@ -45,7 +45,7 @@ exports.loginRegister = async (req, res) => {
             return;
         }
 
-        const passwordMatch = await bcrypt.compare(req.body.password, user.password);
+        const passwordMatch = await bcrypt.compare(req.body.password, user.password); // verification de la concordance des mails
         if (passwordMatch) {
             const userData = {
                 id: user._id,
@@ -69,7 +69,7 @@ exports.loginRegister = async (req, res) => {
 exports.updateRegisterPatch = async (req, res) => {
     try {
         if (!validator.isEmail(req.body.email)) {
-            return res.status(400).json({ message: 'Adresse email invalide' });
+            return res.status(400).json({ message: 'Adresse email invalide' }); // format du mail
         }
         if (req.body.password) {
             req.body.password = await bcrypt.hash(req.body.password, saltRounds);
@@ -90,7 +90,7 @@ exports.updateRegisterPatch = async (req, res) => {
 exports.updateRegisterPut = async (req, res) => {
     try {
         if (!validator.isEmail(req.body.email)) {
-            return res.status(400).json({ message: 'Adresse email invalide' });
+            return res.status(400).json({ message: 'Adresse email invalide' }); // format du mail
         }
         if (req.body.password) {
             req.body.password = await bcrypt.hash(req.body.password, saltRounds);
